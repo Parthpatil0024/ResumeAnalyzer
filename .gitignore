@@ -1,2 +1,8 @@
 # Ignore development settings
 ResumeAnalyzer.API/appsettings.Development.json
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.vscode/
