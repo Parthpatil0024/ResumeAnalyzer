@@ -1,0 +1,17 @@
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\obj\Debug\net10.0\ResumeAnalyzer.Services.csproj.AssemblyReference.cache
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\obj\Debug\net10.0\ResumeAnalyzer.Services.GeneratedMSBuildEditorConfig.editorconfig
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\obj\Debug\net10.0\ResumeAnalyzer.Services.AssemblyInfoInputs.cache
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\obj\Debug\net10.0\ResumeAnalyzer.Services.AssemblyInfo.cs
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\obj\Debug\net10.0\ResumeAnalyzer.Services.csproj.CoreCompileInputs.cache
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\bin\Debug\net10.0\ResumeAnalyzer.Services.deps.json
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\bin\Debug\net10.0\ResumeAnalyzer.Services.dll
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\bin\Debug\net10.0\ResumeAnalyzer.Services.pdb
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\bin\Debug\net10.0\ResumeAnalyzer.Data.dll
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\bin\Debug\net10.0\ResumeAnalyzer.Models.dll
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\bin\Debug\net10.0\ResumeAnalyzer.Models.pdb
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\bin\Debug\net10.0\ResumeAnalyzer.Data.pdb
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\obj\Debug\net10.0\ResumeAn.9A5707BD.Up2Date
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\obj\Debug\net10.0\ResumeAnalyzer.Services.dll
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\obj\Debug\net10.0\refint\ResumeAnalyzer.Services.dll
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\obj\Debug\net10.0\ResumeAnalyzer.Services.pdb
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Services\obj\Debug\net10.0\ref\ResumeAnalyzer.Services.dll

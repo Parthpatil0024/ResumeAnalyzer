@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="ResumeAnalyzer.API/ResumeAnalyzer.API.csproj" />
+  <Project Path="ResumeAnalyzer.Data/ResumeAnalyzer.Data.csproj" />
+  <Project Path="ResumeAnalyzer.Models/ResumeAnalyzer.Models.csproj" />
+  <Project Path="ResumeAnalyzer.Services/ResumeAnalyzer.Services.csproj" />
+  <Project Path="ResumeAnalyzer.Tests/ResumeAnalyzer.Tests.csproj" />
+</Solution>

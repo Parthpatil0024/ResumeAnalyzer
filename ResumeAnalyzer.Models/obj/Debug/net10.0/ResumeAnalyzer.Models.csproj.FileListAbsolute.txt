@@ -1,0 +1,11 @@
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Models\obj\Debug\net10.0\ResumeAnalyzer.Models.GeneratedMSBuildEditorConfig.editorconfig
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Models\obj\Debug\net10.0\ResumeAnalyzer.Models.AssemblyInfoInputs.cache
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Models\obj\Debug\net10.0\ResumeAnalyzer.Models.AssemblyInfo.cs
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Models\obj\Debug\net10.0\ResumeAnalyzer.Models.csproj.CoreCompileInputs.cache
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Models\bin\Debug\net10.0\ResumeAnalyzer.Models.deps.json
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Models\bin\Debug\net10.0\ResumeAnalyzer.Models.dll
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Models\bin\Debug\net10.0\ResumeAnalyzer.Models.pdb
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Models\obj\Debug\net10.0\ResumeAnalyzer.Models.dll
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Models\obj\Debug\net10.0\refint\ResumeAnalyzer.Models.dll
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Models\obj\Debug\net10.0\ResumeAnalyzer.Models.pdb
+D:\Dotnet\ResumeAnalyzer\ResumeAnalyzer.Models\obj\Debug\net10.0\ref\ResumeAnalyzer.Models.dll
