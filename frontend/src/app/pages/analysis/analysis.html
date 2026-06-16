@@ -1,0 +1,177 @@
+<div class="analysis-page">
+  <!-- Loading state -->
+  <div class="loading-overlay" *ngIf="loading()">
+    <div class="loader"></div>
+    <p>Loading AI evaluation details...</p>
+  </div>
+
+  <div class="analysis-container" *ngIf="!loading() && !errorMessage()">
+    <!-- Navigation Back Link -->
+    <nav class="back-nav">
+      <a routerLink="/history" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Match History
+      </a>
+    </nav>
+
+    <!-- Details Main Grid -->
+    <div class="analysis-grid" *ngIf="analysisDetails() as analysis">
+      
+      <!-- Left Column: Metrics & Meta Info -->
+      <aside class="sidebar-metrics animate-fade-in">
+        <!-- Score Circular Gauge -->
+        <div class="card score-gauge-card">
+          <div class="gauge-header">
+            <h3>Match Compatibility</h3>
+            <span class="match-date">{{ analysis.analyzedAt | date:'mediumDate' }}</span>
+          </div>
+          
+          <div class="gauge-container">
+            <div class="radial-ring" [ngClass]="{
+              'score-high-border': analysis.matchScore >= 80,
+              'score-medium-border': analysis.matchScore >= 50 && analysis.matchScore < 80,
+              'score-low-border': analysis.matchScore < 50
+            }">
+              <div class="score-display">
+                <span class="score-percent">{{ analysis.matchScore }}%</span>
+                <span class="score-label" [ngClass]="{
+                  'text-high': analysis.matchScore >= 80,
+                  'text-medium': analysis.matchScore >= 50 && analysis.matchScore < 80,
+                  'text-low': analysis.matchScore < 50
+                }">
+                  {{ analysis.matchScore >= 80 ? 'Excellent Match' : (analysis.matchScore >= 50 ? 'Moderate Match' : 'Low Match') }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Evaluation Details Card -->
+        <div class="card meta-details-card">
+          <h3>Evaluation Details</h3>
+          
+          <div class="meta-item">
+            <div class="meta-label">Candidate Resume</div>
+            <div class="meta-value file-value">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+              </svg>
+              <span class="truncate" [title]="analysis.resume.fileName">{{ analysis.resume.fileName }}</span>
+            </div>
+          </div>
+
+          <div class="meta-item">
+            <div class="meta-label">Target Role</div>
+            <div class="meta-value font-bold">{{ analysis.jobDescription.title }}</div>
+          </div>
+
+          <div class="meta-item">
+            <div class="meta-label">Company</div>
+            <div class="meta-value">{{ analysis.jobDescription.company }}</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Column: AI Insight Cards -->
+      <main class="insight-content animate-slide-in">
+        <!-- AI Executive Summary -->
+        <div class="card summary-card">
+          <div class="card-icon-header">
+            <span class="summary-icon"><lucide-icon name="lightbulb" [size]="20"></lucide-icon></span>
+            <h3>AI Executive Summary</h3>
+          </div>
+          <blockquote class="ai-blockquote">
+            <p>{{ analysis.aiSummary }}</p>
+          </blockquote>
+        </div>
+
+        <!-- Skills Matrix Details -->
+        <div class="card skills-matrix-card">
+          <h3>Skills Comparison Matrix</h3>
+          <p class="subtitle">Comparing extracted resume keywords against job requirements.</p>
+
+          <div class="skills-split">
+            <!-- Matched Skills Column -->
+            <div class="skills-column">
+              <h4 class="column-header matched-header">
+                <span class="column-dot dot-matched"></span>
+                Matched Skills ({{ analysis.matchedSkills.length }})
+              </h4>
+              <div class="skills-badges" *ngIf="analysis.matchedSkills.length > 0; else noMatchedSkills">
+                <span class="skill-badge skill-matched" *ngFor="let skill of analysis.matchedSkills">
+                  <lucide-icon name="check-circle" [size]="16" class="mr-1" style="vertical-align: text-bottom;"></lucide-icon> {{ skill }}
+                </span>
+              </div>
+              <ng-template #noMatchedSkills>
+                <span class="no-skills-placeholder">No matching skills detected.</span>
+              </ng-template>
+            </div>
+
+            <!-- Missing Skills Column -->
+            <div class="skills-column">
+              <h4 class="column-header missing-header">
+                <span class="column-dot dot-missing"></span>
+                Missing Requirements ({{ analysis.missingSkills.length }})
+              </h4>
+              <div class="skills-badges" *ngIf="analysis.missingSkills.length > 0; else noMissingSkills">
+                <span class="skill-badge skill-missing" *ngFor="let skill of analysis.missingSkills">
+                  + {{ skill }}
+                </span>
+              </div>
+              <ng-template #noMissingSkills>
+                <span class="no-skills-placeholder">All core skill requirements are satisfied!</span>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actionable Suggestions -->
+        <div class="card suggestions-card">
+          <div class="card-icon-header">
+            <span class="suggestion-icon"><lucide-icon name="rocket" [size]="20"></lucide-icon></span>
+            <h3>Actionable Improvement Suggestions</h3>
+          </div>
+          <p class="subtitle">Optimizations to align candidate credentials closer with the role specification.</p>
+
+          <ul class="suggestions-list" *ngIf="analysis.suggestions.length > 0; else noSuggestions">
+            <li class="suggestion-item" *ngFor="let suggestion of analysis.suggestions">
+              <div class="item-bullet"></div>
+              <div class="item-text">{{ suggestion }}</div>
+            </li>
+          </ul>
+
+          <div class="improve-action-container" *ngIf="analysis.suggestions.length > 0">
+            <button class="btn-primary btn-improve" (click)="onImproveResume()" [disabled]="improving()">
+              <span *ngIf="!improving()"><lucide-icon name="sparkles" [size]="20" class="mr-2" style="vertical-align: text-bottom;"></lucide-icon> Implement Suggestions & Download Resume</span>
+              <span *ngIf="improving()" class="improving-state">
+                <span class="spinner-small"></span> Rewriting your resume...
+              </span>
+            </button>
+          </div>
+
+          <ng-template #noSuggestions>
+            <div class="no-suggestions-placeholder">
+              <span class="sparkle"><lucide-icon name="sparkles" [size]="20"></lucide-icon></span> Candidate profile matches perfectly! No suggestions needed.
+            </div>
+          </ng-template>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Error Alerts Container -->
+  <div class="error-container" *ngIf="!loading() && errorMessage()">
+    <div class="card error-card animate-slide-in">
+      <div class="error-icon"><lucide-icon name="alert-triangle" [size]="32"></lucide-icon></div>
+      <h2>Oops, something went wrong</h2>
+      <p>{{ errorMessage() }}</p>
+      <div class="error-actions">
+        <a routerLink="/history" class="btn-primary">Return to History</a>
+      </div>
+    </div>
+  </div>
+</div>

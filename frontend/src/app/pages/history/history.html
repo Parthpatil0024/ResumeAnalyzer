@@ -1,0 +1,108 @@
+<div class="history-page">
+  <!-- Loading state -->
+  <div class="loading-overlay" *ngIf="loading()">
+    <div class="loader"></div>
+    <p>Loading evaluation records...</p>
+  </div>
+
+  <div class="history-container" *ngIf="!loading()">
+    <header class="page-header animate-fade-in">
+      <h1>AI Match History</h1>
+      <p class="subtitle">Review and inspect previously completed candidate resume evaluations and comparisons.</p>
+    </header>
+
+    <!-- Error Alerts -->
+    <div class="alert alert-danger" *ngIf="errorMessage()">
+      {{ errorMessage() }}
+    </div>
+
+    <!-- Search & Statistics Panel -->
+    <section class="control-panel">
+      <div class="search-bar">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" [value]="searchQuery()" (input)="updateSearch($event)" placeholder="Search by resume name, job title, or company name...">
+      </div>
+
+      <div class="stats-pills" *ngIf="filteredAnalyses().length > 0">
+        <div class="stats-pill">
+          <span class="pill-label">Total Matches</span>
+          <span class="pill-value">{{ totalCount() }}</span>
+        </div>
+        <div class="stats-pill average-score-pill">
+          <span class="pill-label">Avg. Compatibility</span>
+          <span class="pill-value">{{ averageScore() }}%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cards Grid -->
+    <section class="cards-grid" *ngIf="filteredAnalyses().length > 0; else emptyState">
+      <div class="match-card animate-slide-in" *ngFor="let analysis of filteredAnalyses()">
+        <!-- Top row: file name and date -->
+        <div class="card-top">
+          <div class="resume-info">
+            <svg class="pdf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <span class="resume-name" [title]="analysis.resume.fileName">{{ analysis.resume.fileName }}</span>
+          </div>
+          <span class="match-date">{{ analysis.analyzedAt | date:'mediumDate' }}</span>
+        </div>
+
+        <!-- Middle row: job and score -->
+        <div class="card-mid">
+          <div class="job-info">
+            <h2 class="job-title" [title]="analysis.jobDescription.title">{{ analysis.jobDescription.title }}</h2>
+            <p class="company-name">{{ analysis.jobDescription.company }}</p>
+          </div>
+          
+          <div class="score-radial-wrapper">
+            <div class="score-circle" [ngClass]="{
+              'score-high': analysis.matchScore >= 80,
+              'score-medium': analysis.matchScore >= 50 && analysis.matchScore < 80,
+              'score-low': analysis.matchScore < 50
+            }">
+              <span class="score-number">{{ analysis.matchScore }}%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skills Summary stats -->
+        <div class="card-skills-summary">
+          <div class="skills-indicator matched">
+            <span class="indicator-dot"></span>
+            <span class="indicator-text"><strong>{{ analysis.matchedSkills.length }}</strong> skills matched</span>
+          </div>
+          <div class="skills-indicator missing">
+            <span class="indicator-dot"></span>
+            <span class="indicator-text"><strong>{{ analysis.missingSkills.length }}</strong> skills missing</span>
+          </div>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="card-bottom">
+          <a [routerLink]="['/analysis']" [queryParams]="{ id: analysis.id }" class="btn-details w-full text-center">
+            View Full Analysis
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Empty State -->
+    <ng-template #emptyState>
+      <div class="card empty-card animate-slide-in">
+        <div class="empty-icon"><lucide-icon name="search" [size]="48"></lucide-icon></div>
+        <h2>No evaluation records match your query</h2>
+        <p>Try refining your search keyword or go to the matching tool to create a new evaluation check.</p>
+        <div class="empty-actions">
+          <button (click)="searchQuery.set('')" class="btn-secondary" *ngIf="searchQuery()">Clear Filters</button>
+          <a routerLink="/upload" class="btn-primary-action">New AI Match</a>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>

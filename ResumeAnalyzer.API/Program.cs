@@ -48,6 +48,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<BlobService>();
 builder.Services.AddScoped<ResumeParserService>();
 builder.Services.AddScoped<AIAnalysisService>();
+builder.Services.AddScoped<WordGeneratorService>();
 
 var app = builder.Build();
 app.UseStaticFiles(new StaticFileOptions

@@ -1,0 +1,121 @@
+<main class="login-page" aria-labelledby="login-title">
+	<section class="login-shell">
+		<article class="brand-panel" aria-hidden="true">
+			<p class="eyebrow">Resume Analyzer</p>
+			<h1 id="login-title">Move from resume upload to shortlist-ready insights.</h1>
+			<p>
+				Sign in to analyze role fit, compare candidate strengths, and track hiring decisions in one place.
+			</p>
+			<ul>
+				<li>AI-powered resume scorecards</li>
+				<li>Role match intelligence</li>
+				<li>Analysis history across applications</li>
+			</ul>
+		</article>
+
+		<article class="form-panel" aria-label="Login form">
+			@if (authMode() === 'login') {
+				<h2>Welcome back</h2>
+				<p class="subtitle">Use your account to continue your analysis workflow.</p>
+			} @else {
+				<h2>Create your account</h2>
+				<p class="subtitle">Set up your account and start analyzing resumes right away.</p>
+			}
+
+			<div class="mode-switch" role="tablist" aria-label="Authentication mode">
+				<button
+					type="button"
+					role="tab"
+					class="mode-btn"
+					[class.mode-btn-active]="authMode() === 'login'"
+					[attr.aria-selected]="authMode() === 'login'"
+					(click)="setMode('login')"
+				>
+					Sign in
+				</button>
+				<button
+					type="button"
+					role="tab"
+					class="mode-btn"
+					[class.mode-btn-active]="authMode() === 'register'"
+					[attr.aria-selected]="authMode() === 'register'"
+					(click)="setMode('register')"
+				>
+					Register
+				</button>
+			</div>
+
+			@if (errorMessage()) {
+				<p class="alert" role="alert" aria-live="assertive">{{ errorMessage() }}</p>
+			}
+
+			<form [formGroup]="authMode() === 'login' ? loginForm : registerForm" (ngSubmit)="submit()" novalidate>
+				@if (authMode() === 'register') {
+					<div class="field-group">
+						<label for="name">Full name</label>
+						<input
+							id="name"
+							type="text"
+							formControlName="name"
+							autocomplete="name"
+							[attr.aria-invalid]="showNameError()"
+							[class.input-invalid]="showNameError()"
+						/>
+						@if (showNameError()) {
+							<p id="name-error" class="field-error">{{ nameErrorText() }}</p>
+						}
+					</div>
+				}
+
+				<div class="field-group">
+					<label for="email">Email</label>
+					<input
+						id="email"
+						type="email"
+						formControlName="email"
+						autocomplete="email"
+						inputmode="email"
+						[attr.aria-invalid]="showEmailError()"
+						[class.input-invalid]="showEmailError()"
+					/>
+					@if (showEmailError()) {
+						<p id="email-error" class="field-error">{{ emailErrorText() }}</p>
+					}
+				</div>
+
+				<div class="field-group">
+					<label for="password">Password</label>
+					<input
+						id="password"
+						type="password"
+						formControlName="password"
+						autocomplete="{{ authMode() === 'login' ? 'current-password' : 'new-password' }}"
+						[attr.aria-invalid]="showPasswordError()"
+						[class.input-invalid]="showPasswordError()"
+					/>
+					@if (showPasswordError()) {
+						<p id="password-error" class="field-error">{{ passwordErrorText() }}</p>
+					}
+				</div>
+
+				<button type="submit" [disabled]="submitting()">
+					@if (submitting()) {
+						<span>{{ authMode() === 'login' ? 'Signing in...' : 'Creating account...' }}</span>
+					} @else {
+						<span>{{ authMode() === 'login' ? 'Sign in' : 'Create account' }}</span>
+					}
+				</button>
+			</form>
+
+			@if (authMode() === 'login') {
+				<p class="meta-links">
+					Forgot your password? Contact your administrator.
+				</p>
+			}
+			<p class="meta-links">
+				Protected routes redirect after login.
+				<a href="/dashboard">Go to dashboard</a>
+			</p>
+		</article>
+	</section>
+</main>

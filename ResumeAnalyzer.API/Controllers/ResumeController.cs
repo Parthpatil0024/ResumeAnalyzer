@@ -17,16 +17,19 @@ public class ResumeController : ControllerBase
     private readonly BlobService _blobService;
     private readonly ResumeParserService _parser;
     private readonly AIAnalysisService _aiService;
+    private readonly WordGeneratorService _wordGenerator;
     public ResumeController(
         AppDbContext db,
         BlobService blobService,
         ResumeParserService parser,
-        AIAnalysisService aiService)
+        AIAnalysisService aiService,
+        WordGeneratorService wordGenerator)
     {
         _db = db;
         _blobService = blobService;
         _parser = parser;
-        _aiService=aiService;
+        _aiService = aiService;
+        _wordGenerator = wordGenerator;
     }
 
     private int UserId => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -66,6 +69,7 @@ public class ResumeController : ControllerBase
         {
             id = resume.Id,
             fileName = resume.FileName,
+            blobUrl = resume.BlobUrl,
             uploadedAt = resume.UploadedAt,
             textLength = extractedText.Length,
             preview = extractedText.Length > 200 
@@ -84,6 +88,7 @@ public class ResumeController : ControllerBase
             {
                 r.Id,
                 r.FileName,
+                r.BlobUrl,
                 r.UploadedAt,
                 TextLength = r.ExtractedText.Length
             })
@@ -106,6 +111,7 @@ public class ResumeController : ControllerBase
         {
             resume.Id,
             resume.FileName,
+            resume.BlobUrl,
             resume.UploadedAt,
             resume.ExtractedText
         });
@@ -145,6 +151,27 @@ public async Task<IActionResult> Analyze([FromBody] AnalyzeDto dto)
 
     if (jobDesc == null)
         return NotFound(new { message = "Job description not found" });
+
+    // Check if analysis already exists
+    var existingAnalysis = await _db.Analyses
+        .Where(a => a.ResumeId == dto.ResumeId && a.JobDescriptionId == dto.JobDescriptionId)
+        .FirstOrDefaultAsync();
+
+    if (existingAnalysis != null)
+    {
+        return Ok(new
+        {
+            existingAnalysis.Id,
+            existingAnalysis.MatchScore,
+            existingAnalysis.MatchedSkills,
+            existingAnalysis.MissingSkills,
+            existingAnalysis.Suggestions,
+            existingAnalysis.AISummary,
+            existingAnalysis.AnalyzedAt,
+            Resume = new { resume.FileName },
+            JobDescription = new { jobDesc.Title, jobDesc.Company }
+        });
+    }
 
     // Call AI analysis
     var aiResult = await _aiService.AnalyzeResumeAsync(
@@ -203,6 +230,34 @@ public async Task<IActionResult> GetMyAnalyses()
         .ToListAsync();
 
     return Ok(analyses);
+}
+
+[HttpPost("{analysisId}/improve")]
+public async Task<IActionResult> ImproveResume(int analysisId)
+{
+    var analysis = await _db.Analyses
+        .Include(a => a.Resume)
+        .Where(a => a.Id == analysisId && a.Resume.UserId == UserId)
+        .FirstOrDefaultAsync();
+
+    if (analysis == null)
+        return NotFound(new { message = "Analysis not found" });
+
+    if (string.IsNullOrEmpty(analysis.Resume.ExtractedText))
+        return BadRequest(new { message = "Resume text is empty" });
+
+    if (analysis.Suggestions == null || analysis.Suggestions.Count == 0)
+        return BadRequest(new { message = "No suggestions available for this analysis" });
+
+    // Call AI service to rewrite resume based on suggestions
+    var improvedText = await _aiService.ImproveResumeAsync(analysis.Resume.ExtractedText, analysis.Suggestions);
+
+    // Generate Word Document from the improved text
+    var wordBytes = _wordGenerator.GenerateResumeWord(improvedText);
+
+    // Return the generated DOCX file
+    var originalName = Path.GetFileNameWithoutExtension(analysis.Resume.FileName);
+    return File(wordBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", $"Improved_Resume_{originalName}.docx");
 }
 }
 

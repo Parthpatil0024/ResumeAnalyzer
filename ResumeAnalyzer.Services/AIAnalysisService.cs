@@ -55,7 +55,7 @@ Return ONLY the JSON object:";
             {
                 new { role = "user", content = prompt }
             },
-            reasoning = new { enabled = true },
+            reasoning = new { enabled = false },
             temperature = 0.7,
             max_tokens = 2000
         };
@@ -164,6 +164,8 @@ Return ONLY the JSON object:";
 
     private AnalysisResult CreateFallbackAnalysis(string resumeText, string jobDescription)
     {
+
+        Console.WriteLine("Using fallback analysis");
         var resumeLower = resumeText.ToLower();
         var jobLower = jobDescription.ToLower();
 
@@ -221,5 +223,69 @@ Return ONLY the JSON object:";
 
         [JsonPropertyName("reasoning_details")]
         public object? ReasoningDetails { get; set; }
+    }
+
+    public async Task<string> ImproveResumeAsync(string resumeText, List<string> suggestions)
+    {
+        var suggestionsList = string.Join("\n- ", suggestions);
+        var prompt = $@"You are an expert executive resume writer and ATS optimization specialist. 
+Your task is to completely rewrite the following resume to seamlessly incorporate the provided improvement suggestions.
+
+Guidelines for your rewrite:
+1. Format it as a highly professional, ATS-friendly resume.
+2. The top of the resume MUST start directly with the candidate's name and contact information (do NOT add a title like 'Resume' or 'Improved Resume').
+3. Use clear, standard section headings in ALL CAPS (e.g., SUMMARY, SKILLS, EXPERIENCE, EDUCATION).
+4. Make the bullet points punchy, action-oriented, and heavily quantified using metrics where appropriate.
+5. Integrate the improvement suggestions naturally into the experience and skills sections.
+6. Do not invent entirely new companies or degrees, but you may infer realistic responsibilities and technical skills based on the candidate's existing background and the suggestions.
+7. Output ONLY the final resume text. Do not include any conversational filler, markdown formatting blocks (like ```), or explanatory notes.
+
+Original Resume:
+{resumeText}
+
+Improvement Suggestions:
+- {suggestionsList}
+
+Return ONLY the improved resume text:";
+
+        var requestBody = new
+        {
+            model = _model,
+            messages = new[]
+            {
+                new { role = "user", content = prompt }
+            },
+            reasoning = new { enabled = false },
+            temperature = 0.7,
+            max_tokens = 3000
+        };
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://openrouter.ai/api/v1/chat/completions")
+        {
+            Content = new StringContent(
+                JsonSerializer.Serialize(requestBody),
+                Encoding.UTF8,
+                "application/json")
+        };
+
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
+
+        var response = await _httpClient.SendAsync(request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"OpenRouter API error: {response.StatusCode} - {errorContent}");
+        }
+
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var openRouterResponse = JsonSerializer.Deserialize<OpenRouterResponse>(responseContent);
+
+        if (openRouterResponse?.Choices == null || openRouterResponse.Choices.Count == 0)
+        {
+            throw new Exception("OpenRouter returned empty response");
+        }
+
+        return openRouterResponse.Choices[0].Message.Content.Trim();
     }
 }

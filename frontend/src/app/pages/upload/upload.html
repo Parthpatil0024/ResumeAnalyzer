@@ -1,0 +1,144 @@
+<div class="upload-page">
+  <div class="upload-container">
+    <header class="page-header animate-fade-in">
+      <h1>Resource Center & Match Creator</h1>
+      <p class="subtitle">Upload resumes and define job descriptions to evaluate candidates with AI matching.</p>
+    </header>
+
+    <!-- Side-by-side forms grid -->
+    <div class="forms-grid">
+      <!-- Uploader Form -->
+      <div class="card form-card">
+        <div class="card-header">
+          <h3><lucide-icon name="file-text" [size]="20" class="mr-2" style="vertical-align: middle;"></lucide-icon> Upload Resume PDF</h3>
+          <p>Select a candidate resume to parse and extract text for matching.</p>
+        </div>
+
+        <div class="card-body">
+          <div class="alert alert-danger" *ngIf="resumeError()">
+            {{ resumeError() }}
+          </div>
+          <div class="alert alert-success" *ngIf="resumeSuccess()">
+            {{ resumeSuccess() }}
+          </div>
+
+          <div class="upload-zone" [class.has-file]="selectedFile">
+            <input type="file" id="resumeFileInput" (change)="onFileSelected($event)" accept="application/pdf" class="file-input-hidden">
+            <label for="resumeFileInput" class="zone-label">
+              <div class="zone-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              <div class="zone-text" *ngIf="!selectedFile">
+                <span class="highlight">Click to browse</span> or drag and drop your PDF file here
+                <span class="subtext">Maximum PDF size: 10MB</span>
+              </div>
+              <div class="zone-text-selected" *ngIf="selectedFile">
+                <span class="file-name">{{ selectedFile.name }}</span>
+                <span class="file-size">{{ (selectedFile.size / (1024 * 1024)) | number:'1.1-2' }} MB</span>
+              </div>
+            </label>
+          </div>
+
+          <button class="btn-primary w-full mt-4" (click)="uploadResume()" [disabled]="!selectedFile || uploadingResume()">
+            <span *ngIf="!uploadingResume()">Upload PDF Resume</span>
+            <span *ngIf="uploadingResume()" class="loading-spinner-container">
+              <span class="spinner-small"></span> Uploading...
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Job Description Form -->
+      <div class="card form-card">
+        <div class="card-header">
+          <h3><lucide-icon name="briefcase" [size]="20" class="mr-2" style="vertical-align: middle;"></lucide-icon> Add Job Description</h3>
+          <p>Define the skills, company, and role requirements for evaluations.</p>
+        </div>
+
+        <div class="card-body">
+          <div class="alert alert-danger" *ngIf="jobError()">
+            {{ jobError() }}
+          </div>
+          <div class="alert alert-success" *ngIf="jobSuccess()">
+            {{ jobSuccess() }}
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="jobTitle">Job Title</label>
+              <input type="text" id="jobTitle" [(ngModel)]="jobTitle" placeholder="e.g. Senior Software Engineer">
+            </div>
+            <div class="form-group flex-1">
+              <label for="jobCompany">Company Name</label>
+              <input type="text" id="jobCompany" [(ngModel)]="jobCompany" placeholder="e.g. Acme Corporation">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="jobContent">Full Job Description Text</label>
+            <textarea id="jobContent" [(ngModel)]="jobContent" rows="5" placeholder="Paste all job description requirements, responsibilities, and qualifications here..."></textarea>
+          </div>
+
+          <button class="btn-primary w-full mt-4" (click)="createJobDescription()" [disabled]="!jobTitle || !jobCompany || !jobContent || creatingJob()">
+            <span *ngIf="!creatingJob()">Save Job Description</span>
+            <span *ngIf="creatingJob()" class="loading-spinner-container">
+              <span class="spinner-small"></span> Saving...
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Match Wizard -->
+    <div class="card match-wizard-card animate-slide-in">
+      <div class="wizard-header">
+        <div class="header-icon"><lucide-icon name="zap" [size]="32"></lucide-icon></div>
+        <div class="header-details">
+          <h3>Interactive Match Wizard</h3>
+          <p>Pair any uploaded resume with a job description to initiate a comprehensive AI analysis check.</p>
+        </div>
+      </div>
+
+      <div class="alert alert-danger" *ngIf="matchError()">
+        {{ matchError() }}
+      </div>
+
+      <div class="wizard-form">
+        <div class="form-group">
+          <label for="wizardResume" class="mb-1 block text-sm font-medium">Select Candidate Resume</label>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full shadcn-select">
+            <mat-select id="wizardResume" (selectionChange)="selectResume($event.value)" [value]="selectedResumeId() || ''" placeholder="Select Resume">
+              <mat-option value="">Select Resume</mat-option>
+              <mat-option *ngFor="let resume of resumes()" [value]="resume.id">
+                {{ resume.fileName }} (Uploaded {{ resume.uploadedAt | date:'shortDate' }})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <label for="wizardJob" class="mb-1 block text-sm font-medium">Select Target Job Description</label>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full shadcn-select">
+            <mat-select id="wizardJob" (selectionChange)="selectJob($event.value)" [value]="selectedJobId() || ''" placeholder="Select Job Description">
+              <mat-option value="">Select Job Description</mat-option>
+              <mat-option *ngFor="let job of jobs()" [value]="job.id">
+                {{ job.title }} at {{ job.company }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <button class="btn-match-wizard" (click)="triggerMatch()" [disabled]="matching() || !selectedResumeId() || !selectedJobId()">
+          <span *ngIf="!matching()">Initiate AI Match</span>
+          <span *ngIf="matching()" class="loading-spinner-container">
+            <span class="spinner-small"></span> Running AI Analyzer...
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

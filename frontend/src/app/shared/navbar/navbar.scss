@@ -1,0 +1,192 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: hsl(var(--background) / 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid hsl(var(--border));
+  transition: all 0.3s ease;
+
+  .navbar-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0.85rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  // Brand / Logo
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    position: relative;
+
+    .brand-glow {
+      display: none; // removed for shadcn aesthetic
+    }
+
+    .brand-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: hsl(var(--foreground));
+      letter-spacing: -0.5px;
+      margin-left: 0.5rem;
+
+      .highlight {
+        color: hsl(var(--primary));
+        background: none;
+        -webkit-background-clip: unset;
+        -webkit-text-fill-color: unset;
+      }
+    }
+  }
+
+  // Navigation Links
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      color: hsl(var(--muted-foreground));
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.875rem;
+      border-radius: calc(var(--radius) - 2px);
+      transition: color 0.2s, background-color 0.2s;
+
+      .nav-icon {
+        width: 16px;
+        height: 16px;
+        stroke-width: 2px;
+      }
+
+      &:hover {
+        color: hsl(var(--foreground));
+        background-color: hsl(var(--accent));
+      }
+
+      &.active {
+        color: hsl(var(--foreground));
+        background-color: hsl(var(--accent));
+        font-weight: 500;
+      }
+    }
+  }
+
+  // User details / Actions
+  .user-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 1rem;
+    border-left: 1px solid hsl(var(--border));
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: hsl(var(--muted));
+        color: hsl(var(--muted-foreground));
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid hsl(var(--border));
+      }
+
+      .user-info {
+        display: flex;
+        flex-direction: column;
+
+        .user-name {
+          color: hsl(var(--foreground));
+          font-weight: 500;
+          font-size: 0.875rem;
+          line-height: 1.2;
+        }
+
+        .user-email {
+          color: hsl(var(--muted-foreground));
+          font-size: 0.75rem;
+          line-height: 1.2;
+        }
+      }
+    }
+
+    .btn-icon {
+      background: transparent;
+      border: 1px solid transparent;
+      color: hsl(var(--muted-foreground));
+      width: 36px;
+      height: 36px;
+      border-radius: calc(var(--radius) - 2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      &:hover {
+        color: hsl(var(--foreground));
+        background-color: hsl(var(--accent));
+      }
+    }
+
+    .btn-logout {
+      &:hover {
+        color: hsl(var(--destructive));
+        background-color: hsl(var(--destructive) / 0.1);
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .navbar {
+    .navbar-container {
+      padding: 0.75rem 1rem;
+    }
+
+    .nav-links {
+      gap: 0.25rem;
+
+      .nav-link {
+        padding: 0.5rem;
+        
+        span {
+          display: none; // Icon only on tablet/mobile
+        }
+      }
+    }
+
+    .user-section {
+      gap: 0.5rem;
+      padding-left: 0.5rem;
+
+      .user-info {
+        display: none; // Hide details, avatar only
+      }
+    }
+  }
+}

@@ -1,0 +1,238 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.login-page {
+  min-height: 100dvh;
+  height: 100dvh;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 3vw, 2rem);
+  background: hsl(var(--background));
+}
+
+.login-shell {
+  width: min(100%, 1000px);
+  height: min(640px, calc(100dvh - 4rem));
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.brand-panel {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+
+  h1 {
+    margin: 0;
+    line-height: 1.15;
+    font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin: 1rem 0 0;
+    color: hsl(var(--primary-foreground) / 0.8);
+    line-height: 1.6;
+  }
+
+  ul {
+    margin: 1.25rem 0 0;
+    padding-inline-start: 1.1rem;
+    display: grid;
+    gap: 0.65rem;
+    line-height: 1.4;
+  }
+}
+
+.eyebrow {
+  display: inline-block;
+  margin: 0 0 1rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  color: hsl(var(--primary-foreground));
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: hsl(var(--primary-foreground) / 0.15);
+}
+
+.form-panel {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+
+  h2 {
+    margin: 0;
+    color: hsl(var(--card-foreground));
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+}
+
+.subtitle {
+  margin: 0.65rem 0 1.35rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.mode-switch {
+  display: inline-flex;
+  padding: 0.2rem;
+  margin: 0 0 1rem;
+  border-radius: var(--radius);
+  background: hsl(var(--muted));
+  gap: 0.2rem;
+}
+
+.mode-btn {
+  min-height: 2rem;
+  min-width: 6.25rem;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.25rem 0.75rem;
+  transition: all 0.2s ease;
+
+  &:focus-visible {
+    outline: none;
+    ring: 2px solid hsl(var(--ring));
+  }
+}
+
+.mode-btn-active {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+}
+
+.alert {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--destructive) / 0.2);
+  background: hsl(var(--destructive) / 0.1);
+  color: hsl(var(--destructive));
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+.field-group {
+  display: grid;
+  gap: 0.5rem;
+
+  label {
+    color: hsl(var(--card-foreground));
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+}
+
+input {
+  min-height: 2.25rem;
+  width: 100%;
+  border: 1px solid hsl(var(--input));
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  transition: border-color 0.2s ease;
+
+  &:focus-visible {
+    outline: none;
+    border-color: hsl(var(--ring));
+  }
+}
+
+.input-invalid {
+  border-color: hsl(var(--destructive));
+}
+
+.field-error {
+  margin: 0;
+  color: hsl(var(--destructive));
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.form-panel form > button {
+  min-height: 2.5rem;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  margin-top: 0.5rem;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  &:focus-visible {
+    outline: none;
+    ring: 2px solid hsl(var(--ring));
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.meta-links {
+  margin: 1rem 0 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+  line-height: 1.5;
+
+  a {
+    color: hsl(var(--primary));
+    font-weight: 500;
+    margin-inline-start: 0.25rem;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: none;
+      text-decoration: underline;
+    }
+  }
+}
+
+@media (width <= 900px) {
+  .login-page {
+    height: auto;
+    overflow: visible;
+  }
+
+  .login-shell {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
